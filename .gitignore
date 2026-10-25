@@ -1,0 +1,74 @@
+# Byte-compiled / optimized / Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.env/
+
+# IDE & Editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Local secrets & environment configuration
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+secrets.toml
+
+# Machine learning model artifacts & checkpoints (tracked via models/ directory)
+models/*.pkl
+models/*.joblib
+models/*.h5
+models/*.onnx
+!models/.gitkeep
+
+# Logs and temporary files
+*.log
+logs/
+tmp/
+temp/
+.cache/
