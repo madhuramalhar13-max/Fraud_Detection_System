@@ -1,0 +1,14 @@
+Transaction_Amount
+Transaction_Type
+Account_Balance
+Device_Type
+Location
+Merchant_Category
+Previous_Fraudulent_Activity
+Daily_Transaction_Count
+Card_Type
+Card_Age
+Transaction_Year
+Transaction_Month
+Transaction_Day
+Transaction_DayOfWeek
