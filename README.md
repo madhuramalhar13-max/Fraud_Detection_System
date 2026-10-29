@@ -136,4 +136,4 @@ streamlit run dashboard/app.py
 - [x] Exploratory Data Analysis (EDA)
 - [x] Preprocessing and feature engineering pipeline
 - [x] Model training and evaluation
-- [x] Streamlit interactive dashboard development
+- [] Streamlit interactive dashboard development
