@@ -1,0 +1,120 @@
+================================================================================
+        FRAUD DETECTION SYSTEM - DATA DICTIONARY & MODELING HANDOVER
+================================================================================
+Execution Date/Time : 2026-10-29 14:11:22
+Cleaned Dataset     : Data/processed/cleaned_fraud_dataset.csv (50,000 rows, 14 columns)
+Data Dictionary CSV : notebooks/data_dictionary.csv
+
+--------------------------------------------------------------------------------
+1. VERIFIED GROUND TRUTH TARGET VARIABLE
+--------------------------------------------------------------------------------
+Target Column Name           : 'Fraud_Label'
+Target Data Type             : int64 (Binary Supervised Classification)
+Class 0 (Legitimate Record)  : 33,933 transactions (67.87%)
+Class 1 (Fraudulent Record)  : 16,067 transactions (32.13%)
+Class Imbalance Ratio        : 2.11 legitimate per 1 fraudulent transaction
+
+CRITICAL TARGET RESTRICTIONS FOR MEMBER 2:
+  * Fraud_Label must be STRICTLY ISOLATED as target vector 'y'.
+  * NEVER include Fraud_Label inside input feature matrix 'X'.
+  * Do not confuse 'Previous_Fraudulent_Activity' with 'Fraud_Label'.
+    'Previous_Fraudulent_Activity' is a historical behavioral feature (prior history),
+    whereas 'Fraud_Label' is the outcome of the CURRENT transaction.
+
+--------------------------------------------------------------------------------
+2. RECOMMENDED MODEL INPUT FEATURES (READY FOR PIPELINE)
+--------------------------------------------------------------------------------
+Total Direct Recommended Features: 10 columns
+
+A. Numerical Features (Scale using StandardScaler / RobustScaler):
+  * Transaction_Amount           : Monetary value of the transaction in USD ($).
+    Example: 39.79 | Preprocessing: Scale using RobustScaler (resilient to outliers) or StandardScaler fitted strictly on training data. For linear models, apply log1p transformation log(x + 1). Combine with Account_Balance to construct Amount-to-Balance depletion ratios.
+  * Account_Balance              : Total available account balance of the user at transaction initiation in USD ($).
+    Example: 93213.17 | Preprocessing: Standardize using StandardScaler fitted on training split. Create composite interaction feature: Transaction_Amount / (Account_Balance + 1).
+  * Daily_Transaction_Count      : Number of transactions executed by the user on the same calendar day up to and including the current transaction.
+    Example: 7 | Preprocessing: Scale using StandardScaler fitted on training split. High values (>10 txns/day) indicate sudden transaction velocity spikes.
+  * Card_Age                     : Age of the card / account measured in months since issuance (approx. 1 to 239 months, up to ~20 years).
+    Example: 65 | Preprocessing: Scale using StandardScaler fitted on training split. Low card age (<6 months) coupled with high transaction amounts is a classic signature of synthetic new-account fraud.
+
+B. Binary Behavioral Flag (Direct Numeric Input, No Scaling Needed):
+  * Previous_Fraudulent_Activity : Historical behavioral indicator recording whether the account had prior confirmed or suspected fraudulent events before this transaction.
+    Example: 0 | Preprocessing: Pass directly as binary numeric indicator (0 or 1). No scaling required. Combine with Daily_Transaction_Count for high-risk composite behavioral flagging.
+
+C. Categorical Features (Apply One-Hot Encoding):
+  * Transaction_Type             : Payment channel / mechanism used to execute the transaction (POS, Online, ATM Withdrawal, Bank Transfer).
+    Distinct Categories (4): ['POS', 'Bank Transfer', 'Online', 'ATM Withdrawal']
+    Preprocessing: OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore')
+  * Device_Type                  : Hardware device type utilized by the customer to perform the transaction (Laptop, Mobile, Tablet).
+    Distinct Categories (3): ['Laptop', 'Mobile', 'Tablet']
+    Preprocessing: OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore')
+  * Location                     : Metropolitan geographic area where the transaction was logged.
+    Distinct Categories (5): ['Sydney', 'New York', 'Mumbai', 'Tokyo', 'London']
+    Preprocessing: OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore')
+  * Merchant_Category            : Commercial industry category of the merchant receiving the payment (Travel, Clothing, Restaurants, Electronics, Groceries).
+    Distinct Categories (5): ['Travel', 'Clothing', 'Restaurants', 'Electronics', 'Groceries']
+    Preprocessing: OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore')
+  * Card_Type                    : Payment card network brand utilized for the transaction (Amex, Mastercard, Visa, Discover).
+    Distinct Categories (4): ['Amex', 'Mastercard', 'Visa', 'Discover']
+    Preprocessing: OneHotEncoder(drop='first', sparse_output=False, handle_unknown='ignore')
+
+--------------------------------------------------------------------------------
+3. COLUMNS REQUIRING SPECIAL HANDLING & FEATURE ENGINEERING
+--------------------------------------------------------------------------------
+1. 'Date' (Standardized ISO-8601 String: YYYY-MM-DD):
+   - Do NOT pass raw date strings into scikit-learn models.
+   - Feature Engineering Recommendations:
+       * Month = df['Date'].dt.month (1 to 12)
+       * Day_Of_Week = df['Date'].dt.dayofweek (0=Monday to 6=Sunday)
+       * Is_Weekend = df['Date'].dt.dayofweek.isin([5, 6]).astype(int)
+       * Day_Of_Year = df['Date'].dt.dayofyear (1 to 365)
+   - Train/Test Split: Use 'Date' for chronological splitting (e.g. Train on
+     Jan-Sep 2023, Test on Oct-Dec 2023) to validate realistic out-of-time performance.
+
+2. 'User_ID' (Customer Identifier: USER_\d+):
+   - High cardinality (8,963 unique users across 50,000 transactions).
+   - Exclude from basic one-hot encoding (prevents high-dimensional memory explosion).
+   - Advanced Option: Can be used to construct historical rolling user metrics
+     (e.g., user average transaction amount, user transaction frequency) computed strictly
+     inside training folds to prevent data leakage.
+
+3. 'Transaction_Amount' & 'Account_Balance' Interaction:
+   - Recommended Composite Feature: Amount_to_Balance_Ratio = Amount / (Balance + 1.0).
+   - In EDA, both features had near-zero bivariate correlation alone; composite financial
+     depletion ratios provide non-linear leverage.
+
+--------------------------------------------------------------------------------
+4. EXCLUDED COLUMNS & DATA LEAKAGE SAFEGUARDS
+--------------------------------------------------------------------------------
+1. Excluded Columns:
+   - 'Transaction_ID': Excluded from feature matrix X. 100% unique per row (50,000 unique).
+     Passing it causes artificial memorization / overfitting.
+   - 'Fraud_Label': Excluded from feature matrix X. Isolated strictly as ground truth y.
+
+2. Data Leakage Prevention Rules for Member 2:
+   - RULE 1: Never fit scalers (StandardScaler, RobustScaler) or encoders (OneHotEncoder)
+     on the entire dataset. Always fit on X_train only, then transform X_val / X_test.
+   - RULE 2: Use scikit-learn Pipeline or ColumnTransformer to encapsulate preprocessing
+     and model training into a single reproducible estimator.
+   - RULE 3: Do not impute features using target knowledge.
+   - RULE 4: For k-fold cross validation, ensure preprocessing is fitted strictly within
+     each training fold (e.g., using cross_val_score with Pipeline).
+
+--------------------------------------------------------------------------------
+5. MODEL EVALUATION GUIDANCE (MEMBER 2 HANDOVER)
+--------------------------------------------------------------------------------
+1. Prioritize Decision Threshold Tuning & PR-AUC:
+   - Standard Accuracy (67.87% baseline) is insufficient for financial fraud detection.
+   - Target evaluation metrics:
+       * Recall (Sensitivity): Minimize false negatives (undetected fraud).
+       * Precision: Minimize false positives (customer disruption).
+       * F1-Score: Harmonic balance between Precision and Recall.
+       * PR-AUC (Precision-Recall Area Under Curve): Primary model selection metric.
+       * ROC-AUC: Secondary ranking metric.
+
+2. Recommended Algorithms to Benchmark:
+   - Baseline Model: Logistic Regression (with scaled numericals and one-hot categoricals).
+   - Tree Ensembles: Random Forest, Gradient Boosting (XGBoost / LightGBM / HistGradientBoosting).
+   - Tree models naturally capture high-order interactions between amounts, categories, and locations.
+================================================================================
+                       END OF DATA DICTIONARY REPORT
+================================================================================

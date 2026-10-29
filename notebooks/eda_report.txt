@@ -1,0 +1,235 @@
+================================================================================
+          FRAUD DETECTION SYSTEM - EXPLORATORY DATA ANALYSIS (EDA)
+================================================================================
+Execution Date/Time : 2026-10-29 14:08:17
+Analyzed Dataset    : D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\Data\processed\cleaned_fraud_dataset.csv
+Output Report Path  : D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\notebooks\eda_report.txt
+Charts Output Dir   : D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\reports\eda
+
+--------------------------------------------------------------------------------
+1. DATASET DIMENSIONS & DATA HEALTH
+--------------------------------------------------------------------------------
+Total Transactions Inspected : 50,000 rows
+Base Feature Count           : 14 columns
+Missing Values Across Cells  : 0
+Total Exact Duplicate Rows   : 0
+Unique Users Tracked         : 8,963 unique accounts
+Date Coverage Range          : 2023-01-01 to 2023-12-31 (Full Year 2023)
+
+--------------------------------------------------------------------------------
+2. TARGET CLASS DISTRIBUTION & IMBALANCE EVALUATION
+--------------------------------------------------------------------------------
+Legitimate Transactions (Class 0) : 33,933 (67.87%)
+Fraudulent Transactions (Class 1) : 16,067 (32.13%)
+Class Imbalance Ratio             : 2.11 legitimate per 1 fraudulent transaction
+
+DOMAIN INTERPRETATION & EVALUATION METRICS GUIDANCE:
+  * In real-world credit card networks, fraud frequency is typically highly extreme
+    (often 0.1% to 1.0%), where standard 'Accuracy' is notoriously misleading (a naive
+    classifier predicting 'Legitimate' for 100% of transactions achieves 99.9% accuracy
+    while allowing 100% of financial losses to occur).
+  * In this synthetic dataset, the fraud rate is 32.13% (~2.11:1 ratio). While this provides
+    sufficient minority class volume for stable gradient updates without severe minority
+    collapse, model performance must still be benchmarked using cost-sensitive metrics:
+      - Recall (Sensitivity): Proportion of fraudulent attempts successfully flagged.
+      - Precision: Proportion of fraud alerts that are genuine threats (minimizing false customer friction).
+      - F1-Score: Harmonic mean balancing Precision and Recall.
+      - PR-AUC (Precision-Recall AUC): The gold standard metric for evaluating risk ranking under class imbalance.
+
+--------------------------------------------------------------------------------
+3. TRANSACTION AMOUNT DISTRIBUTION & COMPARATIVE STATISTICS
+--------------------------------------------------------------------------------
+Statistic                 | Legitimate (0)     | Fraudulent (1)     | Combined All      
+-------------------------------------------------------------------------------------
+Mean Amount ($)           | $99.28             | $99.68             | $99.41            
+Std Deviation ($)         | $98.46             | $99.16             | $98.69            
+Median Amount ($)         | $69.40             | $70.12             | $69.66            
+Minimum ($)               | $0.01              | $0.00              | $0.00             
+25th Percentile (Q1)      | $28.76             | $28.48             | $28.68            
+75th Percentile (Q3)      | $138.49            | $139.52            | $138.85           
+IQR ($)                   | $109.73            | $111.03            | $110.17           
+95th Percentile           | $294.42            | $294.12            | $294.30           
+Maximum ($)               | $1174.14           | $1005.32           | $1174.14          
+-------------------------------------------------------------------------------------
+
+KEY TRANSACTION AMOUNT INSIGHTS:
+  * The parametric and non-parametric distributions of transaction amounts for legitimate
+    and fraudulent transactions are remarkably identical (Mean: $99.28 vs $99.68; Median:
+    $69.40 vs $70.12). Transaction amount alone does NOT act as a simple linear separator.
+  * Structural Anomaly: Exactly 2 transactions out of 50,000 have an amount of $0.00
+    (TXN_12945 and TXN_10863). Both are fraudulent (100% fraud rate), corresponding to
+    classic payment gateway card-testing / authorization pings.
+
+--------------------------------------------------------------------------------
+4. CATEGORICAL FEATURE BREAKDOWN: COUNTS VS. RATES
+--------------------------------------------------------------------------------
+-- TRANSACTION TYPE --
+Category               | Total Volume   | Fraud Count    | Legit Count    | Fraud Rate (%) 
+-------------------------------------------------------------------------------------
+POS                    | 12,549         | 3,995          | 8,554          | 31.84         %
+Online                 | 12,546         | 4,031          | 8,515          | 32.13         %
+ATM Withdrawal         | 12,453         | 4,046          | 8,407          | 32.49         %
+Bank Transfer          | 12,452         | 3,995          | 8,457          | 32.08         %
+-------------------------------------------------------------------------------------
+
+-- MERCHANT CATEGORY --
+Category               | Total Volume   | Fraud Count    | Legit Count    | Fraud Rate (%) 
+-------------------------------------------------------------------------------------
+Clothing               | 10,033         | 3,181          | 6,852          | 31.71         %
+Groceries              | 10,019         | 3,217          | 6,802          | 32.11         %
+Travel                 | 10,015         | 3,235          | 6,780          | 32.30         %
+Restaurants            | 9,976          | 3,255          | 6,721          | 32.63         %
+Electronics            | 9,957          | 3,179          | 6,778          | 31.93         %
+-------------------------------------------------------------------------------------
+
+-- LOCATION (METROPOLITAN AREA) --
+Category               | Total Volume   | Fraud Count    | Legit Count    | Fraud Rate (%) 
+-------------------------------------------------------------------------------------
+Tokyo                  | 10,208         | 3,315          | 6,893          | 32.47         %
+Mumbai                 | 9,994          | 3,156          | 6,838          | 31.58         %
+London                 | 9,945          | 3,181          | 6,764          | 31.99         %
+Sydney                 | 9,938          | 3,194          | 6,744          | 32.14         %
+New York               | 9,915          | 3,221          | 6,694          | 32.49         %
+-------------------------------------------------------------------------------------
+
+-- DEVICE TYPE --
+Category               | Total Volume   | Fraud Count    | Legit Count    | Fraud Rate (%) 
+-------------------------------------------------------------------------------------
+Tablet                 | 16,779         | 5,464          | 11,315         | 32.56         %
+Mobile                 | 16,640         | 5,305          | 11,335         | 31.88         %
+Laptop                 | 16,581         | 5,298          | 11,283         | 31.95         %
+-------------------------------------------------------------------------------------
+
+-- CARD BRAND --
+Category               | Total Volume   | Fraud Count    | Legit Count    | Fraud Rate (%) 
+-------------------------------------------------------------------------------------
+Mastercard             | 12,693         | 4,038          | 8,655          | 31.81         %
+Visa                   | 12,560         | 4,002          | 8,558          | 31.86         %
+Amex                   | 12,419         | 4,021          | 8,398          | 32.38         %
+Discover               | 12,328         | 4,006          | 8,322          | 32.50         %
+-------------------------------------------------------------------------------------
+
+DISTINGUISHING COUNTS FROM RATES:
+  * Tokyo recorded the highest absolute fraud count (3,315 fraud cases) compared to London's
+    3,181 cases. However, Tokyo's fraud RATE is 32.47% while London's is 31.99% — an insignificant
+    delta of only 0.48%. The higher volume is simply due to higher transaction traffic in Tokyo.
+  * Similarly, Restaurants exhibited the highest merchant fraud rate (32.63%), while Clothing
+    exhibited the lowest (31.71%). Across all merchant categories, fraud rates fluctuate within
+    a narrow band of ~0.92%, demonstrating uniform vulnerability across commercial sectors.
+  * Across Transaction Types: ATM Withdrawals (32.49%), Online (32.13%), Bank Transfer (32.08%),
+    and POS (31.84%) show near-identical risk propensity.
+
+--------------------------------------------------------------------------------
+5. BEHAVIORAL INDICATORS & RISK CORRELATION
+--------------------------------------------------------------------------------
+Previous Fraudulent Activity Breakdown:
+  * Clean History (0)               : Total=45,080  | Fraud Cases=14,491 | Fraud Rate=32.15%
+  * History of Prior Fraud (1)      : Total=4,920   | Fraud Cases=1,576  | Fraud Rate=32.03%
+
+Daily Transaction Count Risk Distribution (1 to 14 txns/day):
+  * Min Daily Count Rate : 30.62% (Count=13)
+  * Max Daily Count Rate : 33.07% (Count=1)
+  * Spread Across Range  : 2.46% variation across all daily frequencies.
+
+--------------------------------------------------------------------------------
+6. TEMPORAL TRENDS & SEASONALITY ANALYSIS
+--------------------------------------------------------------------------------
+Monthly Fraud Trends (2023):
+Month        | Total Volume   | Fraud Volume   | Fraud Rate (%) 
+------------------------------------------------------------
+2023-01      | 4,188          | 1,386          | 33.09         %
+2023-02      | 3,903          | 1,246          | 31.92         %
+2023-03      | 4,259          | 1,360          | 31.93         %
+2023-04      | 4,106          | 1,310          | 31.90         %
+2023-05      | 4,162          | 1,315          | 31.60         %
+2023-06      | 4,160          | 1,347          | 32.38         %
+2023-07      | 4,213          | 1,354          | 32.14         %
+2023-08      | 4,384          | 1,434          | 32.71         %
+2023-09      | 4,087          | 1,275          | 31.20         %
+2023-10      | 4,164          | 1,343          | 32.25         %
+2023-11      | 4,085          | 1,301          | 31.85         %
+2023-12      | 4,289          | 1,396          | 32.55         %
+------------------------------------------------------------
+Peak Monthly Fraud Rate   : 33.09% in 2023-01
+Lowest Monthly Fraud Rate : 31.20% in 2023-09
+Monthly Rate Spread       : 1.90% (Steady, non-seasonal baseline)
+
+Day of Week Fraud Trends:
+  * Saturday    : Total=7,302  | Fraud=2,330  | Rate=31.91%
+  * Friday      : Total=7,240  | Fraud=2,307  | Rate=31.86%
+  * Sunday      : Total=7,181  | Fraud=2,379  | Rate=33.13%
+  * Wednesday   : Total=7,137  | Fraud=2,243  | Rate=31.43%
+  * Tuesday     : Total=7,111  | Fraud=2,246  | Rate=31.58%
+  * Monday      : Total=7,065  | Fraud=2,285  | Rate=32.34%
+  * Thursday    : Total=6,964  | Fraud=2,277  | Rate=32.70%
+
+--------------------------------------------------------------------------------
+7. NUMERICAL CORRELATION ANALYSIS (PEARSON)
+--------------------------------------------------------------------------------
+Pearson Correlation Coefficients with 'Fraud_Label':
+  * Transaction_Amount            : +0.0019
+  * Account_Balance               : -0.0032
+  * Previous_Fraudulent_Activity  : -0.0007
+  * Daily_Transaction_Count       : -0.0071
+  * Card_Age                      : -0.0031
+
+CRITICAL MODELING IMPLICATION:
+  * All numerical bivariate Pearson correlations with Fraud_Label are near zero (|-0.0071| max).
+  * Linear models (such as unregularized Logistic Regression without interaction terms)
+    will perform poorly on raw individual features alone.
+  * Feature engineering is MANDATORY: non-linear interaction features (e.g., amount-to-balance
+    ratio, user velocity, high-frequency location switches, device inconsistency) and non-linear
+    tree ensembles (Random Forest, Gradient Boosting / LightGBM) will be required to uncover
+    multivariate decision boundaries.
+
+--------------------------------------------------------------------------------
+8. VISUALIZATION GENERATION AUDIT
+--------------------------------------------------------------------------------
+Generating Static High-Resolution Charts (Matplotlib / Seaborn at 300 DPI):
+  [+] Generated: 01_fraud_vs_legitimate_count.png
+  [+] Generated: 02_fraud_percentage_distribution.png
+  [+] Generated: 03_transaction_amount_distribution.png
+  [+] Generated: 04_fraud_by_transaction_type.png
+  [+] Generated: 05_fraud_by_merchant_category.png
+  [+] Generated: 06_fraud_trends_over_time.png
+  [+] Generated: 07_fraud_distribution_by_location.png
+  [+] Generated: 08_correlation_heatmap.png
+
+Generating Interactive Charts (Plotly HTML):
+  [+] Generated: interactive_fraud_overview.html
+  [+] Generated: interactive_amount_distribution.html
+  [+] Generated: interactive_fraud_by_categories.html
+  [+] Generated: interactive_temporal_trends.html
+
+================================================================================
+                         SUMMARY OF KEY FINDINGS
+================================================================================
+1. Moderate Class Imbalance:
+   Legitimate transactions account for 67.87% (33,933) and Fraud accounts for 32.13% (16,067),
+   yielding a ~2.11:1 ratio. While less extreme than 1% real-world fraud, precision, recall,
+   F1-score, and PR-AUC must be prioritized over raw accuracy.
+
+2. Uniform Marginal Fraud Risk Across Categories:
+   Fraud rates are uniformly distributed across categories: Transaction Types (31.84% - 32.49%),
+   Merchant Categories (31.71% - 32.63%), Locations (31.58% - 32.48%), and Device Types
+   (31.88% - 32.56%). Higher counts in specific cities (e.g. Tokyo) reflect higher transaction
+   volume, not higher intrinsic vulnerability.
+
+3. Overlapping Transaction Amount Distributions:
+   Both legitimate and fraudulent amounts share nearly identical central tendencies (Medians:
+   $69.40 vs $70.12; Means: $99.28 vs $99.68). However, $0.00 transactions (2 records)
+   are 100% fraudulent, confirming authorization card-testing attacks.
+
+4. Near-Zero Bivariate Linear Correlations:
+   All numerical features display Pearson correlations with Fraud_Label between -0.0071 and +0.0019.
+   Consequently, naive linear models without interaction features will struggle; non-linear
+   ensembles (Random Forest, Gradient Boosting) and composite feature engineering (amount-to-balance
+   ratios, transaction velocity per user) will be essential in Phase 2 & 3.
+
+5. Full Annual Temporal Continuity:
+   Transactions span the entire 2023 calendar year (365 days) with stable monthly volume
+   (~4,100 txns/month) and consistent fraud rates (31.2% - 33.1%), providing a solid basis
+   for chronological train/test splitting.
+================================================================================
+                              END OF EDA REPORT
+================================================================================

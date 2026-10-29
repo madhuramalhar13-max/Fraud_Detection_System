@@ -1,0 +1,144 @@
+================================================================================
+          FRAUD DETECTION SYSTEM - DATA CLEANING REPORT
+================================================================================
+Execution Date/Time : 2026-10-29 14:01:34
+Project Root Directory : D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System
+Selected Raw Dataset   : synthetic_fraud_dataset1.csv
+Cleaned Output Target  : Data\processed\cleaned_fraud_dataset.csv
+Cleaning Report Target : notebooks\data_cleaning_report.txt
+
+--------------------------------------------------------------------------------
+STEP 1: DATASET SELECTION & SAFE INGESTION
+--------------------------------------------------------------------------------
+Loaded Raw Dataset: 'synthetic_fraud_dataset1.csv'
+Raw Shape: 50,000 rows, 14 columns
+Safeguard: Created independent deep copy. Original file remained completely untouched.
+
+--------------------------------------------------------------------------------
+STEP 2: MISSING VALUE AUDIT & IMPUTATION POLICY
+--------------------------------------------------------------------------------
+Total Initial Missing Cells (NaN/None) : 0
+Placeholder Missing Values Detected    : 0
+Records Excluded Due to Missing Target : 0
+Features Imputed                       : 0
+Total Final Missing Cells After Audit  : 0
+Imputation Policy Enforced:
+  * Feature missingness: Median imputation for continuous; Mode for categorical.
+  * Target missingness: Strict non-imputation. Exclude from training (0 excluded).
+  * Leakage avoidance: No target data used in any imputation logic.
+
+--------------------------------------------------------------------------------
+STEP 3: DUPLICATE RECORD AUDIT & REMOVAL
+--------------------------------------------------------------------------------
+Exact Duplicate Rows Across All 14 Columns : 0
+Duplicate Transaction_IDs Detected         : 0
+Duplicate Feature Tuples (Excluding ID)    : 0
+Total Rows Removed as Duplicates           : 0
+
+--------------------------------------------------------------------------------
+STEP 4: SANITY AUDIT & VALUE STANDARDIZATION
+--------------------------------------------------------------------------------
+1. Feature: Transaction_Amount
+   Observation : No negative transaction amounts found.
+   Action Taken: Verified: all transaction amounts are non-negative.
+
+2. Feature: Transaction_Amount
+   Observation : 2 records have Transaction_Amount == $0.00.
+   Action Taken: Preserved all 2 records. Both records are labeled as Fraud (Fraud_Label=1). In financial payment systems, $0.00 transactions represent zero-dollar card authorization checks / account testing attacks commonly utilized by fraudsters to probe card validity.
+
+3. Feature: Account_Balance
+   Observation : Checked balance range: min=$500.48, max=$99,998.31.
+   Action Taken: Verified: 0 negative balances (0 invalid). All balances are within valid range.
+
+4. Feature: Daily_Transaction_Count
+   Observation : Checked daily count range: min=1, max=14.
+   Action Taken: Verified: all daily counts fall within plausible bounds (1 to 14 transactions/day).
+
+5. Feature: Card_Age
+   Observation : Checked card age range: min=1 months, max=239 months.
+   Action Taken: Verified: 0 negative card ages (0 invalid). Plausible card lifespans (up to ~20 years).
+
+6. Feature: Categorical Columns
+   Observation : Audited categories: Transaction_Type, Device_Type, Location, Merchant_Category, Card_Type.
+   Action Taken: Stripped leading/trailing whitespace and verified category nomenclature consistency across all records.
+
+7. Feature: Date
+   Observation : Raw dates formatted as text (e.g., '14 August 2023').
+   Action Taken: Successfully parsed 100% of dates (50,000 / 50,000 records). Standardized to canonical ISO-8601 string format (YYYY-MM-DD), covering the full 2023 calendar year (2023-01-01 to 2023-12-31).
+
+8. Feature: Identifiers (Transaction_ID, User_ID)
+   Observation : Verified regex pattern consistency (TXN_\d+, USER_\d+).
+   Action Taken: Verified: 0 non-conforming IDs (TXN invalid: 0, USER invalid: 0).
+
+--------------------------------------------------------------------------------
+STEP 5: TARGET VARIABLE INTEGRITY & CLASS BALANCE
+--------------------------------------------------------------------------------
+Target Column                   : 'Fraud_Label'
+Total Transactions Evaluated    : 50,000
+Legitimate Transactions (Class 0): 33,933 (67.87%)
+Fraudulent Transactions (Class 1): 16,067 (32.13%)
+Unclassified / Invalid Labels   : 0 (0.00%)
+Class Imbalance Ratio           : 2.11 legitimate : 1 fraudulent
+Status: Target variable is verified, clean, non-null, and maintains strict binary definition.
+
+--------------------------------------------------------------------------------
+STEP 6: EXPORT CLEANED DATASET
+--------------------------------------------------------------------------------
+Cleaned dataset saved successfully to: D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\Data\processed\cleaned_fraud_dataset.csv
+Exported File Size: 4.69 MB
+
+--------------------------------------------------------------------------------
+STEP 7: RE-LOAD & VERIFICATION CHECK
+--------------------------------------------------------------------------------
+Verification Reload Status : SUCCESS
+Reloaded Dataset Shape     : 50,000 rows, 14 columns
+Reloaded Null Cell Count   : 0
+Column Data Types Post-Export:
+  * Transaction_ID              : str
+  * User_ID                     : str
+  * Transaction_Amount          : float64
+  * Transaction_Type            : str
+  * Date                        : str
+  * Account_Balance             : float64
+  * Device_Type                 : str
+  * Location                    : str
+  * Merchant_Category           : str
+  * Previous_Fraudulent_Activity: int64
+  * Daily_Transaction_Count     : int64
+  * Card_Type                   : str
+  * Card_Age                    : int64
+  * Fraud_Label                 : int64
+
+================================================================================
+                   DATA CLEANING SUMMARY & COMPARISON
+================================================================================
+Metric                                 | Original (Raw)     | Cleaned (Processed)
+--------------------------------------------------------------------------------
+Total Row Count                        | 50,000             | 50,000            
+Total Column Count                     | 14                 | 14                
+Total Missing Values                   | 0                  | 0                 
+Total Duplicate Rows                   | 0                  | 0                 
+Legitimate Records (Class 0)           | 33,933             | 33,933            
+Fraudulent Records (Class 1)           | 16,067             | 16,067            
+Date Format                            | DD Month YYYY      | ISO-8601 YYYY-MM-DD
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+LIMITATIONS & UNRESOLVED DATA QUALITY OBSERVATIONS:
+--------------------------------------------------------------------------------
+1. Synthetic Distribution Balance:
+   The dataset exhibits a 32.13% fraud rate, which is higher than typical real-world
+   card fraud (<1%). This synthetic balance is advantageous for initial ML algorithm
+   benchmarking, but the model should eventually be evaluated with cost-sensitive
+   thresholds or benchmarked against realistic distributions.
+2. $0.00 Transaction Amounts:
+   Two transactions (TXN_12945 and TXN_10863) have $0.00 amounts. Both are fraudulent
+   (Fraud_Label=1), representing valid card authorization probes. They are intentionally
+   preserved rather than discarded.
+3. Leakage Prevention in Future Feature Engineering:
+   Categorical one-hot/ordinal encoding and numerical scaling (StandardScaler/MinMaxScaler)
+   were intentionally NOT fitted at this stage. These must be integrated into a scikit-learn
+   Pipeline inside the training routines (Phase 3) fitted exclusively on train splits.
+================================================================================
+                          END OF CLEANING REPORT
+================================================================================

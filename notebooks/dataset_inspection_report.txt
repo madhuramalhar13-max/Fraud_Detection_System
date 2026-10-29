@@ -1,0 +1,400 @@
+================================================================================
+          FRAUD DETECTION SYSTEM - DATASET INSPECTION REPORT
+================================================================================
+Execution Directory: D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System
+Inspected Data Directory: D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\Data
+
+Discovered 4 dataset file(s) for inspection:
+  1. credit_card_fraud_dataset.csv (4.68 MB)
+  2. financial_fraud_detection_dataset.csv (462.21 KB)
+  3. Fraud Detection.xlsx (1.18 MB)
+  4. synthetic_fraud_dataset1.csv (4.87 MB)
+
+================================================================================
+[1/4] DATASET: credit_card_fraud_dataset.csv
+================================================================================
+File Path: D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\Data\credit_card_fraud_dataset.csv
+File Size: 4.68 MB
+Extension: .CSV
+Read Status: Success (encoding: utf-8)
+Dataset Shape: 100,000 rows, 7 columns
+Total Duplicate Records: 0 (0.00%)
+
+--------------------------------------------------------------------------------
+COLUMN DETAILS (Data Types, Missing Values, Unique Values):
+--------------------------------------------------------------------------------
+#   | Column Name                  | Dtype        | Missing      | Missing %  | Unique  
+--------------------------------------------------------------------------------
+1   | TransactionID                | int64        | 0            | 0.00     % | 100,000 
+2   | TransactionDate              | str          | 0            | 0.00     % | 367     
+3   | Amount                       | float64      | 0            | 0.00     % | 90,621  
+4   | MerchantID                   | int64        | 0            | 0.00     % | 1,000   
+5   | TransactionType              | str          | 0            | 0.00     % | 2       
+6   | Location                     | str          | 0            | 0.00     % | 10      
+7   | IsFraud                      | int64        | 0            | 0.00     % | 2       
+--------------------------------------------------------------------------------
+Total Missing Cells Across Dataset: 0 (0.00% of all cells)
+
+--------------------------------------------------------------------------------
+POTENTIAL TRANSACTION IDENTIFIERS:
+--------------------------------------------------------------------------------
+  * 'TransactionID': Unique primary key (100% unique values)
+
+--------------------------------------------------------------------------------
+KEY DOMAIN FIELDS CHECKLIST:
+--------------------------------------------------------------------------------
+  * Transaction Amount  : [FOUND] Amount
+  * Transaction Type    : [FOUND] TransactionType
+  * Merchant Category   : [FOUND] MerchantID (Identifier only, no category)
+  * Location            : [FOUND] Location
+  * Timestamp / Date    : [FOUND] TransactionDate
+  * Fraud Label         : [FOUND] IsFraud
+
+--------------------------------------------------------------------------------
+FRAUD LABEL & CLASS IMBALANCE ANALYSIS:
+--------------------------------------------------------------------------------
+  Candidate Column: 'IsFraud' [Primary Target Label Candidate]
+    - Distinct Values: [0, 1]
+    - Value Distribution:
+        Val '0': 99,000 (99.00%)
+        Val '1': 1,000 (1.00%)
+    - Verified Binary / Category Mapping:
+        Legitimate Transactions: 99,000 (99.00%)
+        Fraudulent Transactions: 1,000 (1.00%)
+        Class Imbalance Ratio:   99.00 legitimate per 1 fraudulent transaction
+
+--------------------------------------------------------------------------------
+FIRST 5 ROWS PREVIEW:
+--------------------------------------------------------------------------------
+   TransactionID TransactionDate   Amount  MerchantID TransactionType      Location  IsFraud
+0              1      03-04-2024  4189.27         688          refund   San Antonio        0
+1              2      19-03-2024  2659.71         109          refund        Dallas        0
+2              3      08-01-2024   784.00         394        purchase      New York        0
+3              4      13-04-2024  3514.40         944        purchase  Philadelphia        0
+4              5      12-07-2024   369.07         475        purchase       Phoenix        0
+
+================================================================================
+[2/4] DATASET: financial_fraud_detection_dataset.csv
+================================================================================
+File Path: D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\Data\financial_fraud_detection_dataset.csv
+File Size: 462.21 KB
+Extension: .CSV
+Read Status: Success (encoding: utf-8)
+Dataset Shape: 5,000 rows, 14 columns
+Total Duplicate Records: 0 (0.00%)
+
+--------------------------------------------------------------------------------
+COLUMN DETAILS (Data Types, Missing Values, Unique Values):
+--------------------------------------------------------------------------------
+#   | Column Name                  | Dtype        | Missing      | Missing %  | Unique  
+--------------------------------------------------------------------------------
+1   | Transaction_ID               | str          | 0            | 0.00     % | 5,000   
+2   | Customer_ID                  | str          | 0            | 0.00     % | 3,847   
+3   | Transaction_Date             | str          | 0            | 0.00     % | 4,980   
+4   | Transaction_Amount           | float64      | 0            | 0.00     % | 4,302   
+5   | Merchant_Category            | str          | 0            | 0.00     % | 8       
+6   | Payment_Method               | str          | 0            | 0.00     % | 5       
+7   | Device_Type                  | str          | 0            | 0.00     % | 3       
+8   | Location                     | str          | 0            | 0.00     % | 7       
+9   | Is_International             | int64        | 0            | 0.00     % | 2       
+10  | Previous_Transactions        | int64        | 0            | 0.00     % | 199     
+11  | Average_Spend                | float64      | 0            | 0.00     % | 4,753   
+12  | Account_Age_Days             | int64        | 0            | 0.00     % | 1,827   
+13  | Suspicious_Keyword           | str          | 0            | 0.00     % | 2       
+14  | Fraudulent                   | int64        | 0            | 0.00     % | 2       
+--------------------------------------------------------------------------------
+Total Missing Cells Across Dataset: 0 (0.00% of all cells)
+
+--------------------------------------------------------------------------------
+POTENTIAL TRANSACTION IDENTIFIERS:
+--------------------------------------------------------------------------------
+  * 'Transaction_ID': Unique primary key (100% unique values)
+  * 'Customer_ID': ID pattern with high cardinality (3847/5000 unique)
+
+--------------------------------------------------------------------------------
+KEY DOMAIN FIELDS CHECKLIST:
+--------------------------------------------------------------------------------
+  * Transaction Amount  : [FOUND] Transaction_Amount, Average_Spend
+  * Transaction Type    : [FOUND] Payment_Method
+  * Merchant Category   : [FOUND] Merchant_Category
+  * Location            : [FOUND] Location
+  * Timestamp / Date    : [FOUND] Transaction_Date
+  * Fraud Label         : [FOUND] Fraudulent
+
+--------------------------------------------------------------------------------
+FRAUD LABEL & CLASS IMBALANCE ANALYSIS:
+--------------------------------------------------------------------------------
+  Candidate Column: 'Fraudulent' [Primary Target Label Candidate]
+    - Distinct Values: [0, 1]
+    - Value Distribution:
+        Val '0': 4,518 (90.36%)
+        Val '1': 482 (9.64%)
+    - Verified Binary / Category Mapping:
+        Legitimate Transactions: 4,518 (90.36%)
+        Fraudulent Transactions: 482 (9.64%)
+        Class Imbalance Ratio:   9.37 legitimate per 1 fraudulent transaction
+
+--------------------------------------------------------------------------------
+FIRST 5 ROWS PREVIEW:
+--------------------------------------------------------------------------------
+  Transaction_ID Customer_ID  Transaction_Date  Transaction_Amount Merchant_Category Payment_Method Device_Type   Location  Is_International  Previous_Transactions  Average_Spend  Account_Age_Days Suspicious_Keyword  Fraudulent
+0        T100000    CUST3252  04-10-2023 07:45               37.54            Travel         PayPal         POS  Bengaluru                 0                     94         417.40              1492                 No           0
+1        T100001    CUST1630  26-09-2023 08:29              240.81         Utilities         PayPal      Mobile  Bengaluru                 0                     76         335.47                66                 No           0
+2        T100002    CUST7852  18-07-2023 15:54              105.34     Entertainment     Debit Card      Mobile  Bengaluru                 0                     60         432.03               216                 No           0
+3        T100003    CUST4892  16-10-2023 17:10               73.04         Utilities     NetBanking     Desktop    Kolkata                 0                     68         488.30               449                 No           0
+4        T100004    CUST8831  09-09-2023 00:46               13.57         Utilities    Credit Card     Desktop  Bengaluru                 0                     57         437.03               754                 No           0
+
+================================================================================
+[3/4] DATASET: Fraud Detection.xlsx
+================================================================================
+File Path: D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\Data\Fraud Detection.xlsx
+File Size: 1.18 MB
+Extension: .XLSX
+Read Status: Success (sheet: 'Sheet1', total sheets: 1)
+Dataset Shape: 10,127 rows, 20 columns
+Total Duplicate Records: 0 (0.00%)
+
+--------------------------------------------------------------------------------
+COLUMN DETAILS (Data Types, Missing Values, Unique Values):
+--------------------------------------------------------------------------------
+#   | Column Name                  | Dtype        | Missing      | Missing %  | Unique  
+--------------------------------------------------------------------------------
+1   | step                         | int64        | 0            | 0.00     % | 7       
+2   | type                         | str          | 4            | 0.04     % | 5       
+3   | branch                       | str          | 0            | 0.00     % | 135     
+4   | amount                       | float64      | 2            | 0.02     % | 10,079  
+5   | nameOrig                     | str          | 6            | 0.06     % | 10,121  
+6   | oldbalanceOrg                | float64      | 2            | 0.02     % | 7,328   
+7   | newbalanceOrig               | float64      | 0            | 0.00     % | 5,937   
+8   | nameDest                     | str          | 6            | 0.06     % | 6,495   
+9   | oldbalanceDest               | float64      | 1            | 0.01     % | 4,161   
+10  | newbalanceDest               | float64      | 2            | 0.02     % | 1,509   
+11  | unusuallogin                 | int64        | 0            | 0.00     % | 21      
+12  | isFlaggedFraud               | int64        | 0            | 0.00     % | 1       
+13  | Acct type                    | str          | 10           | 0.10     % | 2       
+14  | Date of transaction          | datetime64[us] | 7            | 0.07     % | 14      
+15  | Time of day                  | str          | 2            | 0.02     % | 3       
+16  | isFraud                      | str          | 0            | 0.00     % | 3       
+17  | Column1                      | int64        | 0            | 0.00     % | 10,127  
+18  | isFraud - Copy               | float64      | 2            | 0.02     % | 2       
+19  | DayOfWeek                    | float64      | 7            | 0.07     % | 7       
+20  | DayOfWeek(new)               | str          | 7            | 0.07     % | 7       
+--------------------------------------------------------------------------------
+Total Missing Cells Across Dataset: 58 (0.03% of all cells)
+
+--------------------------------------------------------------------------------
+POTENTIAL TRANSACTION IDENTIFIERS:
+--------------------------------------------------------------------------------
+  * 'Column1': Unique primary key (100% unique values)
+
+--------------------------------------------------------------------------------
+KEY DOMAIN FIELDS CHECKLIST:
+--------------------------------------------------------------------------------
+  * Transaction Amount  : [FOUND] amount
+  * Transaction Type    : [FOUND] type
+  * Merchant Category   : [MISSING] Not Present
+  * Location            : [FOUND] branch
+  * Timestamp / Date    : [FOUND] step, Date of transaction, Time of day, DayOfWeek, DayOfWeek(new)
+  * Fraud Label         : [FOUND] isFraud, isFraud - Copy, isFlaggedFraud
+
+--------------------------------------------------------------------------------
+FRAUD LABEL & CLASS IMBALANCE ANALYSIS:
+--------------------------------------------------------------------------------
+  Candidate Column: 'isFraud' [Primary Target Label Candidate]
+    - Distinct Values: ['Safe', 'Fraud', 'Not reviewed']
+    - Value Distribution:
+        Val 'Safe': 10,057 (99.31%)
+        Val 'Fraud': 68 (0.67%)
+        Val 'Not reviewed': 2 (0.02%)
+    - Verified Binary / Category Mapping:
+        Legitimate Transactions: 10,057 (99.31%)
+        Fraudulent Transactions: 68 (0.67%)
+        Unclassified / Other:    2 (0.02%)
+        Class Imbalance Ratio:   147.90 legitimate per 1 fraudulent transaction
+
+  Candidate Column: 'isFraud - Copy' [Duplicate / Derived Target Column]
+    - Distinct Values: [0.0, 1.0, nan]
+    - Value Distribution:
+        Val '0.0': 10,057 (99.31%)
+        Val '1.0': 68 (0.67%)
+        Val 'nan': 2 (0.02%)
+    - Verified Binary / Category Mapping:
+        Legitimate Transactions: 10,057 (99.31%)
+        Fraudulent Transactions: 68 (0.67%)
+        Unclassified / Other:    2 (0.02%)
+        Class Imbalance Ratio:   147.90 legitimate per 1 fraudulent transaction
+
+  Candidate Column: 'isFlaggedFraud' [Automated System Rule Flag]
+    - Distinct Values: [0]
+    - Value Distribution:
+        Val '0': 10,127 (100.00%)
+    - Verified Binary / Category Mapping:
+        Legitimate Transactions: 10,127 (100.00%)
+        Fraudulent Transactions: 0 (0.00%)
+        Class Imbalance Ratio:   inf legitimate per 1 fraudulent transaction
+
+--------------------------------------------------------------------------------
+FIRST 5 ROWS PREVIEW:
+--------------------------------------------------------------------------------
+   step     type          branch   amount     nameOrig  oldbalanceOrg  newbalanceOrig     nameDest  oldbalanceDest  newbalanceDest  unusuallogin  isFlaggedFraud Acct type Date of transaction Time of day isFraud  Column1  isFraud - Copy  DayOfWeek DayOfWeek(new)
+0     7  PAYMENT          Espana  1526.50  C1908839976            0.0             0.0  M1304522697             0.0             0.0             7               0   Savings          2018-01-03   Afternoon    Safe     7168             0.0        3.0      Wednesday
+1     7  PAYMENT        Honduras  1620.17    C70432899            0.0             0.0   M252297858             0.0             0.0             2               0   Savings          2018-01-05       Night    Safe     7211             0.0        5.0         Friday
+2     7  PAYMENT       Indonesia  5689.82   C332151172            0.0             0.0  M1430674428             0.0             0.0             3               0   Savings          2018-01-07     Morning    Safe     7268             0.0        7.0         Sunday
+3     7  PAYMENT  Estados Unidos  2211.07  C1148172078            0.0             0.0   M650835126             0.0             0.0            13               0   Savings          2018-01-06   Afternoon    Safe     7325             0.0        6.0       Saturday
+4     7  PAYMENT  Estados Unidos   824.63  C1142006014            0.0             0.0   M745868137             0.0             0.0             7               0   Savings          2018-01-06     Morning    Safe     7326             0.0        6.0       Saturday
+
+================================================================================
+[4/4] DATASET: synthetic_fraud_dataset1.csv
+================================================================================
+File Path: D:\Madhura's Projects\Zedio Developments\Fraud_Detection_System\Data\synthetic_fraud_dataset1.csv
+File Size: 4.87 MB
+Extension: .CSV
+Read Status: Success (encoding: utf-8)
+Dataset Shape: 50,000 rows, 14 columns
+Total Duplicate Records: 0 (0.00%)
+
+--------------------------------------------------------------------------------
+COLUMN DETAILS (Data Types, Missing Values, Unique Values):
+--------------------------------------------------------------------------------
+#   | Column Name                  | Dtype        | Missing      | Missing %  | Unique  
+--------------------------------------------------------------------------------
+1   | Transaction_ID               | str          | 0            | 0.00     % | 50,000  
+2   | User_ID                      | str          | 0            | 0.00     % | 8,963   
+3   | Transaction_Amount           | float64      | 0            | 0.00     % | 21,763  
+4   | Transaction_Type             | str          | 0            | 0.00     % | 4       
+5   | Date                         | str          | 0            | 0.00     % | 365     
+6   | Account_Balance              | float64      | 0            | 0.00     % | 49,867  
+7   | Device_Type                  | str          | 0            | 0.00     % | 3       
+8   | Location                     | str          | 0            | 0.00     % | 5       
+9   | Merchant_Category            | str          | 0            | 0.00     % | 5       
+10  | Previous_Fraudulent_Activity | int64        | 0            | 0.00     % | 2       
+11  | Daily_Transaction_Count      | int64        | 0            | 0.00     % | 14      
+12  | Card_Type                    | str          | 0            | 0.00     % | 4       
+13  | Card_Age                     | int64        | 0            | 0.00     % | 239     
+14  | Fraud_Label                  | int64        | 0            | 0.00     % | 2       
+--------------------------------------------------------------------------------
+Total Missing Cells Across Dataset: 0 (0.00% of all cells)
+
+--------------------------------------------------------------------------------
+POTENTIAL TRANSACTION IDENTIFIERS:
+--------------------------------------------------------------------------------
+  * 'Transaction_ID': Unique primary key (100% unique values)
+
+--------------------------------------------------------------------------------
+KEY DOMAIN FIELDS CHECKLIST:
+--------------------------------------------------------------------------------
+  * Transaction Amount  : [FOUND] Transaction_Amount
+  * Transaction Type    : [FOUND] Transaction_Type
+  * Merchant Category   : [FOUND] Merchant_Category
+  * Location            : [FOUND] Location
+  * Timestamp / Date    : [FOUND] Date
+  * Fraud Label         : [FOUND] Fraud_Label, Previous_Fraudulent_Activity
+
+--------------------------------------------------------------------------------
+FRAUD LABEL & CLASS IMBALANCE ANALYSIS:
+--------------------------------------------------------------------------------
+  Candidate Column: 'Fraud_Label' [Primary Target Label Candidate]
+    - Distinct Values: [0, 1]
+    - Value Distribution:
+        Val '0': 33,933 (67.87%)
+        Val '1': 16,067 (32.13%)
+    - Verified Binary / Category Mapping:
+        Legitimate Transactions: 33,933 (67.87%)
+        Fraudulent Transactions: 16,067 (32.13%)
+        Class Imbalance Ratio:   2.11 legitimate per 1 fraudulent transaction
+
+  Candidate Column: 'Previous_Fraudulent_Activity' [Historical Feature (Behavioral Indicator)]
+    - Distinct Values: [0, 1]
+    - Value Distribution:
+        Val '0': 45,080 (90.16%)
+        Val '1': 4,920 (9.84%)
+    - Verified Binary / Category Mapping:
+        Legitimate Transactions: 45,080 (90.16%)
+        Fraudulent Transactions: 4,920 (9.84%)
+        Class Imbalance Ratio:   9.16 legitimate per 1 fraudulent transaction
+
+--------------------------------------------------------------------------------
+FIRST 5 ROWS PREVIEW:
+--------------------------------------------------------------------------------
+  Transaction_ID    User_ID  Transaction_Amount Transaction_Type              Date  Account_Balance Device_Type  Location Merchant_Category  Previous_Fraudulent_Activity  Daily_Transaction_Count   Card_Type  Card_Age  Fraud_Label
+0      TXN_33553  USER_1834               39.79              POS    14 August 2023         93213.17      Laptop    Sydney            Travel                             0                        7        Amex        65            0
+1       TXN_9427  USER_7875                1.19    Bank Transfer       7 June 2023         75725.25      Mobile  New York          Clothing                             0                       13  Mastercard       186            1
+2        TXN_199  USER_2734               28.96           Online      20 June 2023          1588.96      Tablet    Mumbai       Restaurants                             0                       14        Visa       226            1
+3      TXN_12447  USER_2617              254.32   ATM Withdrawal   7 December 2023         76807.20      Tablet  New York          Clothing                             0                        8        Visa        76            1
+4      TXN_39489  USER_2014               31.28              POS  11 November 2023         92354.66      Mobile    Mumbai       Electronics                             1                       14  Mastercard       140            1
+
+================================================================================
+          DATASET COMPARATIVE SUMMARY & PROJECT SUITABILITY
+================================================================================
+Dataset Name                           | Rows     | Cols  | Missing  | Fraud Col       | Fraud Rate  
+--------------------------------------------------------------------------------------------
+credit_card_fraud_dataset.csv          | 100,000  | 7     | 0        | IsFraud         | 1.00% (1,000)
+financial_fraud_detection_dataset.csv  | 5,000    | 14    | 0        | Fraudulent      | 9.64% (482) 
+Fraud Detection.xlsx                   | 10,127   | 20    | 58       | isFraud         | 0.67% (68)  
+synthetic_fraud_dataset1.csv           | 50,000   | 14    | 0        | Fraud_Label     | 32.13% (16,067)
+--------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+DETAILED DATASET EVALUATION & FINDINGS:
+--------------------------------------------------------------------------------
+1. synthetic_fraud_dataset1.csv:
+   - Shape: 50,000 rows x 14 columns.
+   - Quality: 0 missing values, 0 duplicate records.
+   - Key Fields Coverage: ALL 6 key fields present (Amount, Type, Merchant Category,
+     Location, Date, and Fraud_Label), plus Account_Balance, Device_Type, Card_Type,
+     Card_Age, Daily_Transaction_Count, and Previous_Fraudulent_Activity.
+   - Target Variable: 'Fraud_Label' (0: 33,933 [67.87%], 1: 16,067 [32.13%]).
+   - Target Imbalance: ~2.11:1. Moderate imbalance, highly favorable for stable ML
+     training without extreme minority class collapse.
+   - Alignment: Exactly matches the documented schema and architecture in README.md.
+
+2. credit_card_fraud_dataset.csv:
+   - Shape: 100,000 rows x 7 columns.
+   - Quality: 0 missing values, 0 duplicate records.
+   - Key Fields Coverage: 5 of 6 present (Amount, TransactionType, Location,
+     TransactionDate, IsFraud). Lacks Merchant Category (has MerchantID instead),
+     and lacks contextual features like device, balance, card details.
+   - Target Variable: 'IsFraud' (0: 99,000 [99.00%], 1: 1,000 [1.00%]).
+   - Target Imbalance: 99:1 (1% fraud rate). Highly realistic for card fraud,
+     making it a valuable benchmark dataset for anomaly detection and cost-sensitive learning.
+
+3. financial_fraud_detection_dataset.csv:
+   - Shape: 5,000 rows x 14 columns.
+   - Quality: 0 missing values, 0 duplicate records.
+   - Key Fields Coverage: Comprehensive feature set (Transaction_Amount, Payment_Method,
+     Merchant_Category, Location, Transaction_Date, Fraudulent, plus Device_Type,
+     Is_International, Average_Spend, Account_Age_Days, Suspicious_Keyword).
+   - Target Variable: 'Fraudulent' (0: 4,518 [90.36%], 1: 482 [9.64%]).
+   - Target Imbalance: ~9.37:1 (~9.64% fraud rate). Realistic financial fraud rate,
+     but smaller sample size (5,000 rows).
+
+4. Fraud Detection.xlsx:
+   - Shape: 10,127 rows x 20 columns.
+   - Quality: Contains missing values across multiple columns (type: 4, amount: 2,
+     nameOrig: 6, Acct type: 10, Date: 7, DayOfWeek: 7, isFraud - Copy: 2).
+   - Target Variable: 'isFraud' with 3 distinct values ('Safe': 10,057, 'Fraud': 68,
+     'Not reviewed': 2). Redundant target column 'isFraud - Copy'.
+   - Target Imbalance: Extreme imbalance (68 fraud cases, 0.67%).
+   - Limitations: Lacks explicit merchant category and geographical location (uses branch),
+     has duplicate/redundant helper columns ('Column1', 'isFraud - Copy', 'DayOfWeek(new)'),
+     and uncleaned missing values.
+
+--------------------------------------------------------------------------------
+RECOMMENDATION FOR PROJECT:
+--------------------------------------------------------------------------------
+PRIMARY RECOMMENDATION: 'Data/synthetic_fraud_dataset1.csv'
+  Why:
+  1. Complete Feature Set: Contains all required attributes specified in the project
+     architecture (Transaction Amount, Type, Merchant Category, Location, Date,
+     Device Type, Card Type, Account Balance, Daily Transaction Count, and History).
+  2. Perfect Data Integrity: 0 missing values, 0 duplicate rows, consistent data types.
+  3. Excellent ML Training Size: 50,000 rows provides sufficient volume for robust train/
+     test splitting and hyperparameter tuning.
+  4. Explicit Project Alignment: Directly conforms to the pipeline described in README.md.
+
+SECONDARY / BENCHMARK CANDIDATE: 'Data/financial_fraud_detection_dataset.csv' or
+'Data/credit_card_fraud_dataset.csv' can serve as external validation datasets to test
+model generalization across different fraud distributions.
+================================================================================
+                          END OF INSPECTION REPORT
+================================================================================
