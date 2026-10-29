@@ -133,7 +133,7 @@ streamlit run dashboard/app.py
 - [x] Environment and dependency configuration (`requirements.txt`)
 - [x] Git ignore configuration (`.gitignore`)
 - [x] Dataset verification (`data/synthetic_fraud_dataset1.csv`)
-- [ ] Exploratory Data Analysis (EDA)
-- [ ] Preprocessing and feature engineering pipeline
-- [ ] Model training and evaluation
-- [ ] Streamlit interactive dashboard development
+- [x] Exploratory Data Analysis (EDA)
+- [x] Preprocessing and feature engineering pipeline
+- [x] Model training and evaluation
+- [x] Streamlit interactive dashboard development
